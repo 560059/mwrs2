@@ -12,8 +12,7 @@ ipBit = rand(1,nBitPerSym*nSym) > 0.5; % random 1's and 0's
    ipMod = reshape(ipMod,nBitPerSym,nSym).'; % grouping into multiple symbolsa 
   
    % Assigning modulated symbols to subcarriers from [-26 to -1, +1 to +26] 
-   xF = [zeros(nSym,6) ipMod(:,[1:nBitPerSym/2]) zeros(nSym,1) 
-ipMod(:,[nBitPerSym/2+1:nBitPerSym]) zeros(nSym,5)] ; 
+   xF = [zeros(nSym,6) ipMod(:,[1:nBitPerSym/2]) zeros(nSym,1) ipMod(:,[nBitPerSym/2+1:nBitPerSym]) zeros(nSym,5)] ; 
     
    % Taking FFT, the term (nFFT/sqrt(nDSC)) is for normalizing the power of transmit symbol to 1  
    xt = (nFFT/sqrt(nDSC))*ifft(fftshift(xF.')).';     % Appending cylic prefix 
@@ -25,8 +24,7 @@ ipMod(:,[nBitPerSym/2+1:nBitPerSym]) zeros(nSym,5)] ;
    % Gaussian noise of unit variance, 0 mean 
    nt = 1/sqrt(2)*[randn(1,nSym*80) + j*randn(1,nSym*80)]; 
   
-   % Adding noise, the term sqrt(80/64) is to account for the wasted energy due to 
-cyclic prefix 
+   % Adding noise, the term sqrt(80/64) is to account for the wasted energy due to cyclic prefix 
    yt = sqrt(80/64)*xt + 10^(-EsN0dB(ii)/20)*nt; 
   
    % Receiver 
@@ -55,7 +53,7 @@ end
 simBer = nErr/(nSym*nBitPerSym); 
 theoryBer = (1/2)*erfc(sqrt(10.^(EbN0dB/10))); 
   
-close all; Fig 
+close all; 
 semilogy(EbN0dB,theoryBer,'bs-','LineWidth',2); 
 hold on 
 semilogy(EbN0dB,simBer,'mx-','LineWidth',2); 
